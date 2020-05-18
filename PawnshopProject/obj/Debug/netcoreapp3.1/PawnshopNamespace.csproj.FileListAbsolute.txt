@@ -1,0 +1,12 @@
+/home/bohdan/Projects/Coursework/PawnshopNamespace/bin/Debug/netcoreapp3.1/PawnshopNamespace.deps.json
+/home/bohdan/Projects/Coursework/PawnshopNamespace/bin/Debug/netcoreapp3.1/PawnshopNamespace.dll
+/home/bohdan/Projects/Coursework/PawnshopNamespace/bin/Debug/netcoreapp3.1/PawnshopNamespace.pdb
+/home/bohdan/Projects/Coursework/PawnshopNamespace/bin/Debug/netcoreapp3.1/ItemLibrary.dll
+/home/bohdan/Projects/Coursework/PawnshopNamespace/bin/Debug/netcoreapp3.1/ItemLibrary.pdb
+/home/bohdan/Projects/Coursework/PawnshopNamespace/obj/Debug/netcoreapp3.1/PawnshopNamespace.csprojAssemblyReference.cache
+/home/bohdan/Projects/Coursework/PawnshopNamespace/obj/Debug/netcoreapp3.1/PawnshopNamespace.csproj.CoreCompileInputs.cache
+/home/bohdan/Projects/Coursework/PawnshopNamespace/obj/Debug/netcoreapp3.1/PawnshopNamespace.AssemblyInfoInputs.cache
+/home/bohdan/Projects/Coursework/PawnshopNamespace/obj/Debug/netcoreapp3.1/PawnshopNamespace.AssemblyInfo.cs
+/home/bohdan/Projects/Coursework/PawnshopNamespace/obj/Debug/netcoreapp3.1/PawnshopNamespace.csproj.CopyComplete
+/home/bohdan/Projects/Coursework/PawnshopNamespace/obj/Debug/netcoreapp3.1/PawnshopNamespace.dll
+/home/bohdan/Projects/Coursework/PawnshopNamespace/obj/Debug/netcoreapp3.1/PawnshopNamespace.pdb

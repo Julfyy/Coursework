@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ItemLibrary", "ItemLibrary\ItemLibrary.csproj", "{7BF168CA-3BFA-4DC7-B67E-1B418EC9B12E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PawnshopProject", "PawnshopProject\PawnshopProject.csproj", "{0AFBD313-2BD6-439A-95AC-746DC9CF2C7D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserInterface", "UserInterface\UserInterface.csproj", "{277908FD-3B9F-449A-822F-078305E045C9}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7BF168CA-3BFA-4DC7-B67E-1B418EC9B12E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7BF168CA-3BFA-4DC7-B67E-1B418EC9B12E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7BF168CA-3BFA-4DC7-B67E-1B418EC9B12E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7BF168CA-3BFA-4DC7-B67E-1B418EC9B12E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0AFBD313-2BD6-439A-95AC-746DC9CF2C7D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0AFBD313-2BD6-439A-95AC-746DC9CF2C7D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0AFBD313-2BD6-439A-95AC-746DC9CF2C7D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0AFBD313-2BD6-439A-95AC-746DC9CF2C7D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{277908FD-3B9F-449A-822F-078305E045C9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{277908FD-3B9F-449A-822F-078305E045C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{277908FD-3B9F-449A-822F-078305E045C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{277908FD-3B9F-449A-822F-078305E045C9}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
