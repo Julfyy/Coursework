@@ -8,8 +8,8 @@ namespace PawnshopNamespace
 {
     public class Pawnshop
     {
-        private decimal _budget;
-        private PawnItem[] _itemsList;
+        public decimal _budget;
+        private Dictionary<string, PawnItem> _itemsList;
 
         private class PawnItem : Item
         {
@@ -44,7 +44,7 @@ namespace PawnshopNamespace
 
             if (interestRate < 0)
             {
-                return false;
+                return false; //TODO Exceptions
             }
 
             if (_budget > item.Value)
@@ -53,11 +53,11 @@ namespace PawnshopNamespace
             }
             
             //Resizing container array
-            Array.Resize(ref _itemsList, _itemsList.Length + 1);
+            //Array.Resize(ref _itemsList, _itemsList.Length + 1);
             //Adding new object of PawnItem class, with data, copied from Item object
-            _itemsList[^1] = new PawnItem(item, ref client, interestRate, loanPeriod);
+            _itemsList.Add(item.Name, new PawnItem(item, ref client, interestRate, loanPeriod));
             
-            
+            //TODO Exception for existing keys
            
             client._budget += item.Value;
            
@@ -65,18 +65,15 @@ namespace PawnshopNamespace
             return true;
         }
 
-        public bool BuyItem(Item item, ref Client client)
+        public bool BuyItem(string itemName, ref Client client)
         {
-            for (int i = 0; i < _itemsList.Length; i++)
+            if (_itemsList.ContainsKey(itemName))
             {
-                if (item.Equals(_itemsList[i]))
-                {
-                    _itemsList[i] = null;
-                    client._budget -= _itemsList[i].LoanAmount;
-                    return true;
-                }
+                client._budget -= _itemsList[itemName].Value;
+                _budget += _itemsList[itemName].Value;
+                _itemsList.Remove(itemName);
+                return true;
             }
-
             return false;
         }
         
@@ -85,7 +82,7 @@ namespace PawnshopNamespace
         public Pawnshop(decimal budget)
         {
             _budget = budget;
-            _itemsList = new PawnItem[0];
+            _itemsList = new Dictionary<string, PawnItem>();
         }
         
     }

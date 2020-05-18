@@ -8,6 +8,11 @@ namespace ItemLibrary
         public decimal Value;
         private Categories _category;
 
+        public void Method()
+        {
+            Console.WriteLine("Ya dibil");
+        }
+
         public Item(String name, decimal value, Categories category)
         {
             Name = name;
