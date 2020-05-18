@@ -45,16 +45,12 @@ namespace PawnshopNamespace
                 Budget -= item.Value;
             }
             
-            //Resizing container array
-            //Array.Resize(ref _itemsList, _itemsList.Length + 1);
-            //Adding new object of PawnItem class, with data, copied from Item object
             _itemsList.Add(item.Name, new PawnItem(item, ref client, loanPeriod));
             
             //TODO Exception for existing keys
            
             client.Budget += item.Value;
-           
-           
+
             return true;
         }
 
@@ -62,10 +58,23 @@ namespace PawnshopNamespace
         {
             if (_itemsList.ContainsKey(itemName))
             {
-                client.Budget -= _itemsList[itemName].Value;
-                Budget += _itemsList[itemName].Value;
-                _itemsList.Remove(itemName);
-                return true;
+                var item = _itemsList[itemName];
+                if (client.Equals(item.ClientRef)) //Якщо це той самий клієнт
+                {
+                    if (DateTime.Now.CompareTo(item.dateOfReturning) < 0)
+                    {
+                        var increasedValue = item.Value + item.Value * (decimal) item.InterestRate;
+                        client.Budget -= increasedValue;
+                        Budget += increasedValue;
+                    }
+                }
+                else
+                {
+                    client.Budget -= item.Value;
+                    Budget += item.Value;
+                    _itemsList.Remove(itemName);
+                    return true;
+                }
             }
             return false;
         }
