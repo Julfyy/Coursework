@@ -18,11 +18,12 @@ namespace UserInterface
             Client bill = new Client("Bill", 5000M);
 
 
-            pawnshop.AddItem(ring, ref bob, 0.01, new TimeSpan(0, 5, 0));
-            pawnshop.AddItem(necklace, ref bill, 0.01, new TimeSpan(0, 5, 0));
+            pawnshop.AddItem(ring, ref bob, new TimeSpan(0, 5, 0));
+            pawnshop.AddItem(necklace, ref bill, new TimeSpan(0, 35, 0));
+
 
             pawnshop.BuyItem(ring.Name, ref bill);
-            Console.WriteLine(pawnshop._budget);
+            Console.WriteLine(pawnshop.Budget);
         }
     }
 }

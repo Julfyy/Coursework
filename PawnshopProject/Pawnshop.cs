@@ -8,58 +8,51 @@ namespace PawnshopNamespace
 {
     public class Pawnshop
     {
-        public decimal _budget;
+        public decimal Budget;
         private Dictionary<string, PawnItem> _itemsList;
 
         private class PawnItem : Item
         {
             public bool IsAvailableToBuy;
             internal readonly DateTime dateOfReturning;
-            internal decimal LoanAmount;
             internal Client ClientRef;
             internal double InterestRate;
             
-            protected internal PawnItem(Item item, ref Client client, double interestRate, TimeSpan loanPeriod) 
+            protected internal PawnItem(Item item, ref Client client, TimeSpan loanPeriod) 
                 : base(item)
             {
-                LoanAmount = item.Value;
+                InterestRate = loanPeriod.TotalHours * 0.05 ; //Зростаючий процент боргу залежно від строку
                 ClientRef = client;
-                InterestRate = interestRate;
                 IsAvailableToBuy = true;
                 dateOfReturning = DateTime.Now.Add(loanPeriod);
             }
         }
         
         //Method returns true, if adding was successful
-        public bool AddItem(Item item, ref Client client, double interestRate, TimeSpan loanPeriod) 
+        public bool AddItem(Item item, ref Client client, TimeSpan loanPeriod) 
         {
             //Checking input data
             if (item.Equals(null))
             {
-                return false; //To do: Exceptions
+                return false; //TODO Exceptions
             }
             if (client.Name.Length < 1) {
                 return false;
             }
-
-            if (interestRate < 0)
+            
+            if (Budget > item.Value)
             {
-                return false; //TODO Exceptions
-            }
-
-            if (_budget > item.Value)
-            {
-                _budget -= item.Value;
+                Budget -= item.Value;
             }
             
             //Resizing container array
             //Array.Resize(ref _itemsList, _itemsList.Length + 1);
             //Adding new object of PawnItem class, with data, copied from Item object
-            _itemsList.Add(item.Name, new PawnItem(item, ref client, interestRate, loanPeriod));
+            _itemsList.Add(item.Name, new PawnItem(item, ref client, loanPeriod));
             
             //TODO Exception for existing keys
            
-            client._budget += item.Value;
+            client.Budget += item.Value;
            
            
             return true;
@@ -69,8 +62,8 @@ namespace PawnshopNamespace
         {
             if (_itemsList.ContainsKey(itemName))
             {
-                client._budget -= _itemsList[itemName].Value;
-                _budget += _itemsList[itemName].Value;
+                client.Budget -= _itemsList[itemName].Value;
+                Budget += _itemsList[itemName].Value;
                 _itemsList.Remove(itemName);
                 return true;
             }
@@ -81,7 +74,7 @@ namespace PawnshopNamespace
         //Basic constructor
         public Pawnshop(decimal budget)
         {
-            _budget = budget;
+            Budget = budget;
             _itemsList = new Dictionary<string, PawnItem>();
         }
         
