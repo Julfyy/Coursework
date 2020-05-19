@@ -100,6 +100,17 @@ namespace PawnshopNamespace
             return false;
         }
 
+        public override string ToString()
+        {
+            string info = $"{"Pawnshop Info", 20} {DateTime.Now}\n";
+            info += $"{"ItemName", -15} {"Value", -10} {"ClientName", -15} {"IsAvailable", -15}\n";
+            foreach (var item in _itemsList)
+            {
+                info += $"{item.Key,-15} {item.Value.Value, -10} {item.Value.ClientRef.Name, -15} {item.Value.IsAvailableForSell, -15}\n";
+            }
+
+            return info;
+        }
 
         //Basic constructor
         public Pawnshop(decimal budget)
