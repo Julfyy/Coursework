@@ -23,6 +23,8 @@ namespace UserInterface
             pawnshop.AddItem(necklace, ref bill, new TimeSpan(0, 35, 0));
             
             pawnshop.BuyItem(ring.Name, ref bill);
+         
+
         }
     }
 }
