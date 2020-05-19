@@ -21,8 +21,12 @@ namespace UserInterface
             pawnshop.AddItem(ring, ref bob, new TimeSpan(0, 0, 10));
             pawnshop.AddItem(necklace, ref bill, new TimeSpan(0, 35, 0));
             pawnshop.AddItem(lamborghini, ref bob, new TimeSpan(1, 0, 0));
-            Console.WriteLine(pawnshop.ToString());
             
+            Console.WriteLine(pawnshop.ToString());
+
+            pawnshop.BuyItem(ring.Name, ref bob);
+            Console.WriteLine(pawnshop.ToString());
+
         }
     }
 }
