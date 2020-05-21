@@ -91,7 +91,7 @@ namespace PawnshopNamespace
                 }
                 
                 //Якщо це інший клієнт
-                if (item.IsAvailableForSell) //Пізніше срокуу
+                if (item.IsAvailableForSell) //Якщо покупка пізніше срокуу
                 {
                     client.Budget -= item.Value;
                     _budget += item.Value;

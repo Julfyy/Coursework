@@ -1,9 +1,0 @@
-/home/bohdan/Projects/Coursework/ItemLibrary/bin/Debug/netcoreapp3.1/ItemLibrary.deps.json
-/home/bohdan/Projects/Coursework/ItemLibrary/bin/Debug/netcoreapp3.1/ItemLibrary.dll
-/home/bohdan/Projects/Coursework/ItemLibrary/bin/Debug/netcoreapp3.1/ItemLibrary.pdb
-/home/bohdan/Projects/Coursework/ItemLibrary/obj/Debug/netcoreapp3.1/ItemLibrary.csprojAssemblyReference.cache
-/home/bohdan/Projects/Coursework/ItemLibrary/obj/Debug/netcoreapp3.1/ItemLibrary.csproj.CoreCompileInputs.cache
-/home/bohdan/Projects/Coursework/ItemLibrary/obj/Debug/netcoreapp3.1/ItemLibrary.AssemblyInfoInputs.cache
-/home/bohdan/Projects/Coursework/ItemLibrary/obj/Debug/netcoreapp3.1/ItemLibrary.AssemblyInfo.cs
-/home/bohdan/Projects/Coursework/ItemLibrary/obj/Debug/netcoreapp3.1/ItemLibrary.dll
-/home/bohdan/Projects/Coursework/ItemLibrary/obj/Debug/netcoreapp3.1/ItemLibrary.pdb
