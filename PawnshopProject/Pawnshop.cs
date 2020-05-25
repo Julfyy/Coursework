@@ -9,7 +9,7 @@ namespace PawnshopNamespace
     {
         private decimal _budget;
         private List<PawnItem> _itemsList;
-        private Dictionary<Categories, Queue> _queues;
+        private readonly Dictionary<Categories, Queue> _queues;
         private Dictionary<String, Client> _clients;
 
         private class PawnItem : Item
@@ -23,16 +23,13 @@ namespace PawnshopNamespace
                     return false;
                 }
             }
-
-            //private static int Id;
             private readonly DateTime _dateOfReturning;
             internal readonly Client ClientRef;
             internal readonly double InterestRate;
 
-            internal PawnItem(Item item, ref Client client, TimeSpan loanPeriod)
-                : base(item)
+            internal PawnItem(String name, decimal value, Categories category, ref Client client, TimeSpan loanPeriod)
+                : base(name, value, category)
             {
-                //Id++;
                 InterestRate = loanPeriod.TotalHours * 0.05; //Зростаючий процент боргу залежно від строку
                 ClientRef = client;
                 _dateOfReturning = DateTime.Now.Add(loanPeriod);
@@ -40,20 +37,20 @@ namespace PawnshopNamespace
         }
 
         //Method returns true, if adding was successful
-        public bool AddItem(Item item, ref Client client, TimeSpan loanPeriod)
+        public bool AddItem(String name, decimal value, Categories category, ref Client client, TimeSpan loanPeriod)
         {
-            //Checking input data
+            /*Checking input data
             if (item.Equals(null) || client.Name.Length < 1 || _budget > item.Value)
             {
                 return false; //TODO Exceptions
             }
+            */
 
-            _itemsList.Add(new PawnItem(item, ref client, loanPeriod));
+            _itemsList.Add(new PawnItem(name, value, category, ref client, loanPeriod));
 
             //TODO Exception for existing keys
 
-            client.Budget += item.Value;
-
+            client.Budget += value;
             return true;
         }
 
