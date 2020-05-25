@@ -6,11 +6,66 @@ namespace UserInterface
 {
     static class Program
     {
-        static void Main(string[] args)
+        static void Main()
         {
-            Pawnshop pawnshop = new Pawnshop(10000M);
+            String CommandList = "\tCOMMANDS LIST:\n" +
+                                 "\t\"commands\" to show commands list\n" +
+                                 "\t\"newclient\" to register a new client\n" +
+                                 "\t\"newitem\" to create an instance of your item\n" +
+                                 "\t\"additem\" to add your item to the pawnshop\n" +
+                                 "\t\"enqueue\" to take the last place in a queue of come category\n" +
+                                 "\t\"buyitem\" to buy an item (if you are the first in the queue)\n" +
+                                 "\t\"info\" to see actual information\n" +
+                                 "\t\"exit\" to end up a session";
+            
+            Console.WriteLine("To start type \"start\"");
+            String command = Console.ReadLine();
+            if (command == "start")
+            {
+                Console.WriteLine("Hello! Welcome to the PawnShop!");
+                Pawnshop pawnshop = new Pawnshop(100000M);
+                Console.WriteLine(CommandList);
+                while (true)
+                {
+                    {
+                        command = Console.ReadLine();
+                        switch (command)
+                        {
+                            case "newclient":
+                                Console.WriteLine("Enter client's name and budget (e.g. bob 1000):");
+                                try
+                                {
+                                    var inputSplit = Console.ReadLine().Split(' ');
+                                    pawnshop.AddClient(inputSplit[0], int.Parse(inputSplit[1]));
+                                }
+                                catch (Exception e)
+                                {
+                                    Console.WriteLine("Incorrect input!", e);
+                                }
+                                break;
+                            case "newitem":
+                                
+                                break;
+                            case "info":
+                                Console.WriteLine(pawnshop.ToString());
+                                break;
+                            case "commands":
+                                Console.WriteLine(CommandList);
+                                break;
+                            case "exit":
+                                Environment.Exit(0);
+                                break;
+                        }
+                    }
+                }
+            }
+
+
+            /*
+            
             Client bob = new Client("Bob", 1000M);
             Client bill = new Client("Bill", 5000M);
+            
             
             Item ring = new Item("ring", 500M, Categories.Jewelry);
             Item necklace = new Item("necklace", 100M, Categories.Jewelry);
@@ -28,8 +83,7 @@ namespace UserInterface
             
             
             Console.WriteLine(pawnshop.ToString());
-
-
+*/
         }
     }
 }

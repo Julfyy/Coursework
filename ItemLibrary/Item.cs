@@ -15,7 +15,7 @@ namespace ItemLibrary
             Category = category;
         }
 
-        public Item(Item item)
+        protected Item(Item item)
         {
             Name = item.Name;
             Value = item.Value;
