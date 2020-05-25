@@ -18,7 +18,7 @@ namespace PawnshopNamespace
             {
                 get
                 {
-                    if (DateTime.Now.CompareTo(_dateOfReturning) < 0)
+                    if (DateTime.Now.CompareTo(_dateOfReturning) > 0)
                         return true;
                     return false;
                 }
@@ -37,7 +37,7 @@ namespace PawnshopNamespace
         }
 
         //Method returns true, if adding was successful
-        public bool AddItem(String name, decimal value, Categories category, ref Client client, TimeSpan loanPeriod)
+        public bool AddItem(String name, decimal value, Categories category, Client client, TimeSpan loanPeriod)
         {
             /*Checking input data
             if (item.Equals(null) || client.Name.Length < 1 || _budget > item.Value)
@@ -113,8 +113,14 @@ namespace PawnshopNamespace
         {
             if (name.Length == 0 || budget < 0)
                 throw new ArgumentException();
-            _clients[name] = new Client(name, budget);
+            _clients.Add(name, new Client(name, budget));
         }
+
+        public Client GetClientRef(String name)
+        {
+            return _clients[name];
+        }
+        
 
         public override string ToString()
         {
@@ -126,6 +132,12 @@ namespace PawnshopNamespace
                     $"{_itemsList.IndexOf(item),-3}{item.Name,-15} {item.Value,-10} {item.ClientRef.Name,-15} {item.Category,-15} {item.IsAvailableForSell,-15}\n";
             }
 
+            info += "\nClients list:\n";
+            foreach (var client in _clients.Keys)
+            {
+                info += $"{client}\n";
+            }
+            
             return info;
         }
 

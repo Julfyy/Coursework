@@ -11,7 +11,6 @@ namespace UserInterface
             String CommandList = "\tCOMMANDS LIST:\n" +
                                  "\t\"commands\" to show commands list\n" +
                                  "\t\"newclient\" to register a new client\n" +
-                                 "\t\"newitem\" to create an instance of your item\n" +
                                  "\t\"additem\" to add your item to the pawnshop\n" +
                                  "\t\"enqueue\" to take the last place in a queue of come category\n" +
                                  "\t\"buyitem\" to buy an item (if you are the first in the queue)\n" +
@@ -36,16 +35,37 @@ namespace UserInterface
                                 try
                                 {
                                     var inputSplit = Console.ReadLine().Split(' ');
-                                    pawnshop.AddClient(inputSplit[0], int.Parse(inputSplit[1]));
+                                    pawnshop.AddClient(inputSplit[0], decimal.Parse(inputSplit[1]));
                                 }
                                 catch (Exception e)
                                 {
-                                    Console.WriteLine("Incorrect input!", e);
+                                    Console.WriteLine($"Incorrect input! {e.Message}");
+                                    break;
                                 }
+                                Console.WriteLine($"Successfully added new client");
                                 break;
-                            case "newitem":
-                                
+                            
+                            case "additem":
+                                Console.WriteLine("Enter: item's name, value, category, client's name and loan period\n" +
+                                                  "e.g. ring 50 jewelry bob 0:0:5");
+                                try
+                                {
+                                    var inputSplit = Console.ReadLine().Split(' ');
+                                    Enum.TryParse(inputSplit[2], out Categories category);
+                                    pawnshop.AddItem(inputSplit[0],
+                                        decimal.Parse(inputSplit[1]),
+                                        category,
+                                        pawnshop.GetClientRef(inputSplit[3]),
+                                        TimeSpan.Parse(inputSplit[4]));
+                                }
+                                catch (Exception e)
+                                {
+                                    Console.WriteLine($"Incorrect input! {e.Message}");
+                                    break;
+                                }
+                                Console.WriteLine("Successfully added new item to pawnshop");
                                 break;
+                            
                             case "info":
                                 Console.WriteLine(pawnshop.ToString());
                                 break;
@@ -54,6 +74,9 @@ namespace UserInterface
                                 break;
                             case "exit":
                                 Environment.Exit(0);
+                                break;
+                            default:
+                                Console.WriteLine("Unrecognized command");
                                 break;
                         }
                     }
