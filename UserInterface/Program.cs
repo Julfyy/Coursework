@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using PawnshopNamespace;
 using ItemLibrary;
 
@@ -22,11 +20,15 @@ namespace UserInterface
             pawnshop.AddItem(necklace, ref bill, new TimeSpan(0, 35, 0));
             pawnshop.AddItem(lamborghini, ref bob, new TimeSpan(1, 0, 0));
             
+            Console.WriteLine(pawnshop.ToString());
+
+            //pawnshop.EnqueueToCategory(Categories.Jewelry, ref bob);
+            pawnshop.BuyItem(0, ref bob);
+            pawnshop.BuyItem(0, ref bob);
+            
             
             Console.WriteLine(pawnshop.ToString());
 
-            pawnshop.BuyItem(ring.Name, ref bob);
-            Console.WriteLine(pawnshop.ToString());
 
         }
     }
