@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using ItemLibrary;
 
@@ -8,9 +7,9 @@ namespace PawnshopNamespace
     public class Pawnshop
     {
         private decimal _budget;
-        private List<PawnItem> _itemsList;
-        private readonly Dictionary<Categories, Queue> _queues;
-        private Dictionary<String, Client> _clients;
+        private readonly List<PawnItem> _itemsList;
+        private readonly Dictionary<Categories, Queue<Client>> _queues;
+        private readonly Dictionary<String, Client> _clients;
 
         private class PawnItem : Item
         {
@@ -39,27 +38,18 @@ namespace PawnshopNamespace
         //Method returns true, if adding was successful
         public bool AddItem(String name, decimal value, Categories category, Client client, TimeSpan loanPeriod)
         {
-            /*Checking input data
-            if (item.Equals(null) || client.Name.Length < 1 || _budget > item.Value)
-            {
-                return false; //TODO Exceptions
-            }
-            */
-
-            _itemsList.Add(new PawnItem(name, value, category, ref client, loanPeriod));
-
-            //TODO Exception for existing keys
-
-            client.Budget += value;
-            return true;
+           _itemsList.Add(new PawnItem(name, value, category, ref client, loanPeriod));
+           _budget -= value;
+           client.Budget += value;
+           return true;
         }
 
-        public bool BuyItem(int index, ref Client client)
+        public bool BuyItem(int index, Client client)
         {
             var item = _itemsList[index];
             if (_queues.ContainsKey(item.Category)) //Якщо існує черга на категорію
             {
-                if (_queues[item.Category].Peek() == client) //Якщо клієнт перший в черзі
+                if (_queues[item.Category].Peek().Equals(client)) //Якщо клієнт перший в черзі
                 {
                     if (client.Equals(item.ClientRef)) // Якщо це той самий клієнт
                     {
@@ -69,6 +59,7 @@ namespace PawnshopNamespace
                             client.Budget -= increasedValue;
                             _budget += increasedValue;
                             _itemsList.RemoveAt(index);
+                            _queues[item.Category].Dequeue();
                             return true;
                         }
 
@@ -76,6 +67,7 @@ namespace PawnshopNamespace
                         client.Budget -= item.Value;
                         _budget += item.Value;
                         _itemsList.RemoveAt(index);
+                        _queues[item.Category].Dequeue();
                         return true;
                     }
 
@@ -85,26 +77,29 @@ namespace PawnshopNamespace
                         client.Budget -= item.Value;
                         _budget += item.Value;
                         _itemsList.RemoveAt(index);
+                        _queues[item.Category].Dequeue();
                         return true;
                     }
                 }
+                return false;
             }
 
-            EnqueueToCategory(item.Category, ref client);
+            EnqueueToCategory(item.Category, client); //Якщо черга пуста, створити її
 
-
+            if (BuyItem(index, client)) //Тоді поточний клієнт буде першим, тобто може купити річ
+                return true;
+        
             return false;
         }
 
-        public void EnqueueToCategory(Categories category, ref Client client)
+        public void EnqueueToCategory(Categories category, Client client)
         {
-            if (_queues.ContainsKey(category))
-            {
+            if (_queues.ContainsKey(category)) //Якщо черга на задану категорію існує
                 _queues[category].Enqueue(client);
-            }
+            
             else
             {
-                _queues.Add(category, new Queue());
+                _queues.Add(category, new Queue<Client>());
                 _queues[category].Enqueue(client);
             }
         }
@@ -131,11 +126,21 @@ namespace PawnshopNamespace
                 info +=
                     $"{_itemsList.IndexOf(item),-3}{item.Name,-15} {item.Value,-10} {item.ClientRef.Name,-15} {item.Category,-15} {item.IsAvailableForSell,-15}\n";
             }
-
+            
             info += "\nClients list:\n";
             foreach (var client in _clients.Keys)
             {
                 info += $"{client}\n";
+            }
+
+            info += "\nCurrent queues:\n";
+            foreach (var category in _queues.Keys)
+            {
+                info += $"{category}:\n";
+                foreach (var client in _queues[category].ToArray())
+                {
+                    info += $"\t{client.Name}\n";
+                }
             }
             
             return info;
@@ -146,7 +151,7 @@ namespace PawnshopNamespace
         {
             _budget = budget;
             _itemsList = new List<PawnItem>();
-            _queues = new Dictionary<Categories, Queue>();
+            _queues = new Dictionary<Categories, Queue<Client>>();
             _clients = new Dictionary<string, Client>();
         }
     }

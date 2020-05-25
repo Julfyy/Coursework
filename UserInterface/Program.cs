@@ -16,97 +16,101 @@ namespace UserInterface
                                  "\t\"buyitem\" to buy an item (if you are the first in the queue)\n" +
                                  "\t\"info\" to see actual information\n" +
                                  "\t\"exit\" to end up a session";
-            
-            Console.WriteLine("To start type \"start\"");
-            String command = Console.ReadLine();
-            if (command == "start")
+
+
+            Console.WriteLine("Hello! Welcome to the PawnShop!");
+            Pawnshop pawnshop = new Pawnshop(100000M);
+            Console.WriteLine(CommandList);
+            while (true)
             {
-                Console.WriteLine("Hello! Welcome to the PawnShop!");
-                Pawnshop pawnshop = new Pawnshop(100000M);
-                Console.WriteLine(CommandList);
-                while (true)
                 {
+                    var command = Console.ReadLine();
+                    switch (command)
                     {
-                        command = Console.ReadLine();
-                        switch (command)
-                        {
-                            case "newclient":
-                                Console.WriteLine("Enter client's name and budget (e.g. bob 1000):");
-                                try
-                                {
-                                    var inputSplit = Console.ReadLine().Split(' ');
-                                    pawnshop.AddClient(inputSplit[0], decimal.Parse(inputSplit[1]));
-                                }
-                                catch (Exception e)
-                                {
-                                    Console.WriteLine($"Incorrect input! {e.Message}");
-                                    break;
-                                }
-                                Console.WriteLine($"Successfully added new client");
+                        case "newclient":
+                            Console.WriteLine("Enter client's name and budget (e.g. bob 1000.0):");
+                            try
+                            {
+                                var inputSplit = Console.ReadLine().Split(' ');
+                                pawnshop.AddClient(inputSplit[0], decimal.Parse(inputSplit[1]));
+                            }
+                            catch (Exception e)
+                            {
+                                Console.WriteLine($"Incorrect input! {e.Message}");
                                 break;
-                            
-                            case "additem":
-                                Console.WriteLine("Enter: item's name, value, category, client's name and loan period\n" +
-                                                  "e.g. ring 50 jewelry bob 0:0:5");
-                                try
-                                {
-                                    var inputSplit = Console.ReadLine().Split(' ');
-                                    Enum.TryParse(inputSplit[2], out Categories category);
-                                    pawnshop.AddItem(inputSplit[0],
-                                        decimal.Parse(inputSplit[1]),
-                                        category,
-                                        pawnshop.GetClientRef(inputSplit[3]),
-                                        TimeSpan.Parse(inputSplit[4]));
-                                }
-                                catch (Exception e)
-                                {
-                                    Console.WriteLine($"Incorrect input! {e.Message}");
-                                    break;
-                                }
-                                Console.WriteLine("Successfully added new item to pawnshop");
+                            }
+                            Console.WriteLine($"Successfully added new client");
+                            break;
+
+                        case "additem":
+                            Console.WriteLine("Enter: item's name, value, category, client's name and loan period (DD:HH:MM:SS)\n" +
+                                              "\te.g. ring 100 0 bob 0:0:5:0\n" +
+                                              "Categories:");
+                            foreach (var s in Enum.GetNames(typeof(Categories)))
+                                Console.WriteLine("{0,15} = {1}", s, Enum.Format(typeof(Categories), Enum.Parse(typeof(Categories), s), "d"));
+                            try
+                            {
+                                var inputSplit = Console.ReadLine().Split(' ');
+                                Enum.TryParse(inputSplit[2], out Categories category);
+                                if(pawnshop.AddItem(inputSplit[0], decimal.Parse(inputSplit[1]), category,
+                                                                            pawnshop.GetClientRef(inputSplit[3]),
+                                                                            TimeSpan.Parse(inputSplit[4])))
+                                    Console.WriteLine("Successfully added new item to pawnshop");
+                            }
+                            catch (Exception e)
+                            {
+                                Console.WriteLine($"Incorrect input! {e.Message}");
+                                
+                            }
+                            break;
+                        
+                        case "buyitem":
+                            Console.WriteLine("Enter: index of an item in the list and client's name");
+                            try
+                            {
+                                var inputSplit = Console.ReadLine().Split(' ');
+                                if (pawnshop.BuyItem(int.Parse(inputSplit[0]), pawnshop.GetClientRef(inputSplit[1])))
+                                    Console.WriteLine("Successfully sold item ");
+                                else
+                                    Console.WriteLine("Enqueue to category first!");
+                            }
+                            catch (Exception e)
+                            {
+                                Console.WriteLine($"Incorrect input! {e.Message}");
+                            }
+                            break;
+                        case "enqueue":
+                            Console.WriteLine("Enter: category and client's name");
+                            try
+                            {
+                                var inputSplit = Console.ReadLine().Split(' ');
+                                Enum.TryParse(inputSplit[0], out Categories category);
+                                pawnshop.EnqueueToCategory(category, pawnshop.GetClientRef(inputSplit[1]));
+
+                            }
+                            catch (Exception e)
+                            {
+                                Console.WriteLine($"Incorrect input! {e.Message}");
                                 break;
-                            
-                            case "info":
-                                Console.WriteLine(pawnshop.ToString());
-                                break;
-                            case "commands":
-                                Console.WriteLine(CommandList);
-                                break;
-                            case "exit":
-                                Environment.Exit(0);
-                                break;
-                            default:
-                                Console.WriteLine("Unrecognized command");
-                                break;
-                        }
+                            }
+                            Console.WriteLine("Successfully added client to the queue");
+                            break;
+
+                        case "info":
+                            Console.WriteLine(pawnshop.ToString());
+                            break;
+                        case "commands":
+                            Console.WriteLine(CommandList);
+                            break;
+                        case "exit":
+                            Environment.Exit(0);
+                            break;
+                        default:
+                            Console.WriteLine("Unrecognized command");
+                            break;
                     }
                 }
             }
-
-
-            /*
-            
-            Client bob = new Client("Bob", 1000M);
-            Client bill = new Client("Bill", 5000M);
-            
-            
-            Item ring = new Item("ring", 500M, Categories.Jewelry);
-            Item necklace = new Item("necklace", 100M, Categories.Jewelry);
-            Item lamborghini = new Item("lamborghini", 1000M, Categories.Vehicles);
-
-            pawnshop.AddItem(ring, ref bob, new TimeSpan(0, 0, 10));
-            pawnshop.AddItem(necklace, ref bill, new TimeSpan(0, 35, 0));
-            pawnshop.AddItem(lamborghini, ref bob, new TimeSpan(1, 0, 0));
-            
-            Console.WriteLine(pawnshop.ToString());
-
-            //pawnshop.EnqueueToCategory(Categories.Jewelry, ref bob);
-            pawnshop.BuyItem(0, ref bob);
-            pawnshop.BuyItem(0, ref bob);
-            
-            
-            Console.WriteLine(pawnshop.ToString());
-*/
         }
     }
 }
