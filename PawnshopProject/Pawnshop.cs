@@ -101,8 +101,11 @@ namespace PawnshopNamespace
 
         public void EnqueueToCategory(Categories category, Client client)
         {
+            
             if (_queues.ContainsKey(category))  //Якщо черга на задану категорію існує
             {
+                if (_queues[category].Contains(client)) //Якщо клієнт вже в черзі
+                    throw new QueueException("You are already in the queue!");
                 _queues[category].Enqueue(client);
                 Notify?.Invoke(this, new PawnshopEventArgs($"Added {client.Name} to queue for category {category}"));
             }
@@ -112,6 +115,20 @@ namespace PawnshopNamespace
                 _queues[category].Enqueue(client);
                 Notify?.Invoke(this, new PawnshopEventArgs($"Created a new queue for {category} and added {client.Name} first"));
             }
+        }
+
+        public void DequeueFromCategory(Categories category, Client client)
+        {
+            if (_queues[category].Contains(client) && _queues[category].Peek().Equals(client))
+            {
+                _queues[category].Dequeue();
+                Notify?.Invoke(this, new PawnshopEventArgs($"Client {client.Name} left the queue to category {category}"));
+            }
+            else
+            {
+                throw new QueueException("You are not in the queue or not in the first place!");
+            }
+            
         }
 
         public void AddClient(String name, decimal budget)

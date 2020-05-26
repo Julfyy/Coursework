@@ -114,8 +114,21 @@ namespace UserInterface
                             }
                             catch (Exception e)
                             {
-                                Console.WriteLine($"Incorrect input! {e.Message}");
-                                break;
+                                Console.WriteLine($"{e.Message}");
+                            }
+                            break;
+                        case "dequeue":
+                            Console.WriteLine("Enter: category and client's name\n" +
+                                              "(You can dequeue only when you are the first");
+                            try
+                            {
+                                var inputSplit = Console.ReadLine().Split(' ');
+                                Enum.TryParse(inputSplit[0], out Categories category);
+                                pawnshop.DequeueFromCategory(category, pawnshop.GetClientRef(inputSplit[1]));
+                            }
+                            catch (Exception e)
+                            {
+                                Console.WriteLine($"{e.Message}");
                             }
                             break;
 
