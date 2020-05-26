@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using PawnshopNamespace;
 using ItemLibrary;
 
@@ -17,10 +18,11 @@ namespace UserInterface
                                  "\t\"info\" to see actual information\n" +
                                  "\t\"exit\" to end up a session";
 
-
+            Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine("Hello! Welcome to the PawnShop!");
-            Pawnshop pawnshop = new Pawnshop(100000M);
             Console.WriteLine(CommandList);
+            Console.ResetColor();
+            Pawnshop pawnshop = new Pawnshop(100000M);
             while (true)
             {
                 {
@@ -43,16 +45,27 @@ namespace UserInterface
                             break;
 
                         case "additem":
+                            //Виведення інформації про параметри к консоль
                             Console.WriteLine("Enter: item's name, value, category, client's name and loan period (DD:HH:MM:SS)\n" +
-                                              "\te.g. ring 100 0 bob 0:0:5:0\n" +
+                                              "\t(e.g. ring 100 0 bob 0:0:5:0)\n" +
                                               "Categories:");
                             foreach (var s in Enum.GetNames(typeof(Categories)))
-                                Console.WriteLine("{0,15} = {1}", s, Enum.Format(typeof(Categories), Enum.Parse(typeof(Categories), s), "d"));
+                                Console.WriteLine("{0,15} = {1}", s, Enum.Format(typeof(Categories),
+                                    Enum.Parse(typeof(Categories), s), "d"));
                             try
                             {
                                 var inputSplit = Console.ReadLine().Split(' ');
-                                Enum.TryParse(inputSplit[2], out Categories category);
-                                if(pawnshop.AddItem(inputSplit[0], decimal.Parse(inputSplit[1]), category,
+                                
+                                //Перевірка на правильність вводу категорії
+                                if (Enum.TryParse( inputSplit[2], true, out Categories category)) 
+                                {
+                                    if (!Enum.IsDefined(typeof(Categories), category))
+                                    {
+                                        Console.WriteLine("Wrong category number!");
+                                        break;
+                                    }
+                                }
+                                if (pawnshop.AddItem(inputSplit[0], decimal.Parse(inputSplit[1]), category,
                                                                             pawnshop.GetClientRef(inputSplit[3]),
                                                                             TimeSpan.Parse(inputSplit[4])))
                                     Console.WriteLine("Successfully added new item to pawnshop");
@@ -71,13 +84,16 @@ namespace UserInterface
                                 var inputSplit = Console.ReadLine().Split(' ');
                                 if (pawnshop.BuyItem(int.Parse(inputSplit[0]), pawnshop.GetClientRef(inputSplit[1])))
                                     Console.WriteLine("Successfully sold item ");
-                                else
-                                    Console.WriteLine("Enqueue to category first!");
+                            }
+                            catch (Pawnshop.QueueException e)
+                            {
+                                Console.WriteLine($"{e.Message}");   
                             }
                             catch (Exception e)
                             {
                                 Console.WriteLine($"Incorrect input! {e.Message}");
                             }
+
                             break;
                         case "enqueue":
                             Console.WriteLine("Enter: category and client's name");
@@ -97,7 +113,9 @@ namespace UserInterface
                             break;
 
                         case "info":
+                            Console.ForegroundColor = ConsoleColor.Green;
                             Console.WriteLine(pawnshop.ToString());
+                            Console.ResetColor();
                             break;
                         case "commands":
                             Console.WriteLine(CommandList);
