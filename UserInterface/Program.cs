@@ -43,9 +43,7 @@ namespace UserInterface
                             catch (Exception e)
                             {
                                 Console.WriteLine($"Incorrect input! {e.Message}");
-                                break;
                             }
-                            Console.WriteLine($"Successfully added new client");
                             break;
 
                         case "additem":
@@ -104,7 +102,6 @@ namespace UserInterface
                             {
                                 Console.WriteLine($"Incorrect input! {e.Message}");
                             }
-
                             break;
                         case "enqueue":
                             Console.WriteLine("Enter: category and client's name");
@@ -120,7 +117,6 @@ namespace UserInterface
                                 Console.WriteLine($"Incorrect input! {e.Message}");
                                 break;
                             }
-                            Console.WriteLine("Successfully added client to the queue");
                             break;
 
                         case "info":
@@ -152,7 +148,7 @@ namespace UserInterface
 
         private static void WriteToHistory(object sender, Pawnshop.PawnshopEventArgs e)
         {
-            History += $"{e.Message} at time {DateTime.Now}\n";
+            History += $"{e.Message} at {DateTime.Now}\n";
         }
         
     }
