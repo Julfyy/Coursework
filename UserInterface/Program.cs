@@ -7,6 +7,7 @@ namespace UserInterface
 {
     static class Program
     {
+        private static string History = "";
         static void Main()
         {
             String CommandList = "\tCOMMANDS LIST:\n" +
@@ -15,6 +16,7 @@ namespace UserInterface
                                  "\t\"additem\" to add your item to the pawnshop\n" +
                                  "\t\"enqueue\" to take the last place in a queue of come category\n" +
                                  "\t\"buyitem\" to buy an item (if you are the first in the queue)\n" +
+                                 "\t\"history\" to show history of  transactions\n" +
                                  "\t\"info\" to see actual information\n" +
                                  "\t\"exit\" to end up a session";
 
@@ -23,6 +25,8 @@ namespace UserInterface
             Console.WriteLine(CommandList);
             Console.ResetColor();
             Pawnshop pawnshop = new Pawnshop(100000M);
+            pawnshop.Notify += DisplayMessage;
+            pawnshop.Notify += WriteToHistory;
             while (true)
             {
                 {
@@ -49,9 +53,13 @@ namespace UserInterface
                             Console.WriteLine("Enter: item's name, value, category, client's name and loan period (DD:HH:MM:SS)\n" +
                                               "\t(e.g. ring 100 0 bob 0:0:5:0)\n" +
                                               "Categories:");
+                            //Виведення списку категорій
                             foreach (var s in Enum.GetNames(typeof(Categories)))
+                            {
                                 Console.WriteLine("{0,15} = {1}", s, Enum.Format(typeof(Categories),
-                                    Enum.Parse(typeof(Categories), s), "d"));
+                                                    Enum.Parse(typeof(Categories), s), "d"));
+                            }
+
                             try
                             {
                                 var inputSplit = Console.ReadLine().Split(' ');
@@ -65,10 +73,10 @@ namespace UserInterface
                                         break;
                                     }
                                 }
-                                if (pawnshop.AddItem(inputSplit[0], decimal.Parse(inputSplit[1]), category,
-                                                                            pawnshop.GetClientRef(inputSplit[3]),
-                                                                            TimeSpan.Parse(inputSplit[4])))
-                                    Console.WriteLine("Successfully added new item to pawnshop");
+
+                                pawnshop.AddItem(inputSplit[0], decimal.Parse(inputSplit[1]), category,
+                                                                    pawnshop.GetClientRef(inputSplit[3]),
+                                                                    TimeSpan.Parse(inputSplit[4]));
                             }
                             catch (Exception e)
                             {
@@ -82,12 +90,15 @@ namespace UserInterface
                             try
                             {
                                 var inputSplit = Console.ReadLine().Split(' ');
-                                if (pawnshop.BuyItem(int.Parse(inputSplit[0]), pawnshop.GetClientRef(inputSplit[1])))
-                                    Console.WriteLine("Successfully sold item ");
+                                pawnshop.BuyItem(int.Parse(inputSplit[0]), pawnshop.GetClientRef(inputSplit[1]));
                             }
                             catch (Pawnshop.QueueException e)
                             {
-                                Console.WriteLine($"{e.Message}");   
+                                Console.WriteLine($"{e.Message}");
+                            }
+                            catch (InvalidTimeZoneException e)
+                            {
+                                Console.WriteLine($"{e.Message}");
                             }
                             catch (Exception e)
                             {
@@ -117,6 +128,9 @@ namespace UserInterface
                             Console.WriteLine(pawnshop.ToString());
                             Console.ResetColor();
                             break;
+                        case "history":
+                            Console.WriteLine(History);
+                            break;
                         case "commands":
                             Console.WriteLine(CommandList);
                             break;
@@ -130,5 +144,16 @@ namespace UserInterface
                 }
             }
         }
+
+        private static void DisplayMessage(object sender, Pawnshop.PawnshopEventArgs e)
+        {
+            Console.WriteLine($"{e.Message}");
+        }
+
+        private static void WriteToHistory(object sender, Pawnshop.PawnshopEventArgs e)
+        {
+            History += $"{e.Message} at time {DateTime.Now}\n";
+        }
+        
     }
 }

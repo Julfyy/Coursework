@@ -11,18 +11,21 @@ namespace PawnshopNamespace
         private readonly Dictionary<Categories, Queue<Client>> _queues;
         private readonly Dictionary<String, Client> _clients;
 
+        public delegate void EventHandler(object sender, PawnshopEventArgs e);
+        public event EventHandler Notify;
+
         private class PawnItem : Item
         {
             public bool IsAvailableForSell
             {
                 get
                 {
-                    if (DateTime.Now.CompareTo(_dateOfReturning) >= 0)
+                    if (DateTime.Now.CompareTo(DateOfReturning) >= 0)
                         return true;
                     return false;
                 }
             }
-            internal readonly DateTime _dateOfReturning;
+            internal readonly DateTime DateOfReturning;
             internal readonly Client ClientRef;
             internal readonly double InterestRate;
 
@@ -31,22 +34,22 @@ namespace PawnshopNamespace
             {
                 InterestRate = loanPeriod.TotalHours * 0.05; //Зростаючий процент боргу залежно від строку
                 ClientRef = client;
-                _dateOfReturning = DateTime.Now.Add(loanPeriod);
+                DateOfReturning = DateTime.Now.Add(loanPeriod);
             }
         }
 
         //Method returns true, if adding was successful
-        public bool AddItem(String name, decimal value, Categories category, Client client, TimeSpan loanPeriod)
+        public void AddItem(String name, decimal value, Categories category, Client client, TimeSpan loanPeriod)
         {
             if (value < 0)
                 throw new ArgumentException("Found negative value for item");
             _itemsList.Add(new PawnItem(name, value, category, ref client, loanPeriod));
             _budget -= value;
             client.Budget += value;
-            return true;
+            Notify?.Invoke(this, new PawnshopEventArgs($"{client.Name} added {name} to pawnshop for {value, 1:C}"));
         }
 
-        public bool BuyItem(int index, Client client)
+        public void BuyItem(int index, Client client)
         {
             var item = _itemsList[index];
             if (_queues.ContainsKey(item.Category)) //Якщо існує черга на категорію
@@ -62,7 +65,8 @@ namespace PawnshopNamespace
                             _budget += increasedValue;
                             _itemsList.RemoveAt(index);
                             _queues[item.Category].Dequeue();
-                            return true;
+                            Notify?.Invoke(this, new PawnshopEventArgs($"{client.Name} bought {item.Name} for {increasedValue}" ));
+                            return;
                         }
 
                         //До кінця сроку
@@ -70,7 +74,8 @@ namespace PawnshopNamespace
                         _budget += item.Value;
                         _itemsList.RemoveAt(index);
                         _queues[item.Category].Dequeue();
-                        return true;
+                        Notify?.Invoke(this, new PawnshopEventArgs($"{client.Name} bought {item.Name} for {item.Value}"));
+                        return;
                     }
 
                     //Якщо це інший клієнт
@@ -80,25 +85,23 @@ namespace PawnshopNamespace
                         _budget += item.Value;
                         _itemsList.RemoveAt(index);
                         _queues[item.Category].Dequeue();
-                        return true;
+                        Notify?.Invoke(this, new PawnshopEventArgs($"{client.Name} bought {item.Name} for {item.Value}"));
+                        return;
                     }
+                    throw new InvalidTimeZoneException("You are not able to buy this item yet! Wait till it's available!");
                 }
-                throw new QueueException("Enqueue to category first!");
+                throw new QueueException("You are not the first is the queue!");
             }
-
+            Notify?.Invoke(this, new PawnshopEventArgs("Queue for this category not found"));
+            Notify?.Invoke(this, new PawnshopEventArgs("Creating a queue automatically"));
             EnqueueToCategory(item.Category, client); //Якщо черга пуста, створити її
-
-            if (BuyItem(index, client)) //Тоді поточний клієнт буде першим, тобто може купити річ
-                return true;
-        
-            return false;
+            BuyItem(index, client); //Тоді поточний клієнт буде першим, тобто може купити річ
         }
 
         public void EnqueueToCategory(Categories category, Client client)
         {
             if (_queues.ContainsKey(category)) //Якщо черга на задану категорію існує
                 _queues[category].Enqueue(client);
-            
             else
             {
                 _queues.Add(category, new Queue<Client>());
@@ -126,7 +129,7 @@ namespace PawnshopNamespace
             foreach (var item in _itemsList)
             {
                 info +=
-                    $"{_itemsList.IndexOf(item),-3}{item.Name,-15} {item.Value,-10} {item.ClientRef.Name,-15} {item.Category,-15} {item.IsAvailableForSell,-15} {item._dateOfReturning}\n";
+                    $"{_itemsList.IndexOf(item),-3}{item.Name,-15} {item.Value,-10} {item.ClientRef.Name,-15} {item.Category,-15} {item.IsAvailableForSell,-15} {item.DateOfReturning}\n";
             }
             
             info += "\nClients:\n";
@@ -159,14 +162,24 @@ namespace PawnshopNamespace
 
         public class QueueException : Exception
         {
-            public QueueException()
-            {
-            }
-
             public QueueException(String mes) : base(mes)
             {
                 
             }
         }
+
+        public class PawnshopEventArgs
+        {
+            public string Message {get;}
+           
+
+            public PawnshopEventArgs(string mes)
+            {
+                Message = mes;
+                
+            }
+        }
+
+
     }
 }
