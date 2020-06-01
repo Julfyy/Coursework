@@ -5,9 +5,12 @@ using ItemLibrary;
 
 namespace UserInterface
 {
+    /*
+     * Клас що реалізує користувацький інтерфейс
+     */
     static class Program
     {
-        private static string History = "";
+        private static string _history = "";
         static void Main()
         {
             String CommandList = "\tCOMMANDS LIST:\n" +
@@ -138,7 +141,7 @@ namespace UserInterface
                             Console.ResetColor();
                             break;
                         case "history":
-                            Console.WriteLine(History);
+                            Console.WriteLine(_history);
                             break;
                         case "commands":
                             Console.WriteLine(CommandList);
@@ -161,7 +164,7 @@ namespace UserInterface
 
         private static void WriteToHistory(object sender, Pawnshop.PawnshopEventArgs e)
         {
-            History += $"{e.Message} at {DateTime.Now}\n";
+            _history += $"{e.Message} at {DateTime.Now}\n";
         }
         
     }
